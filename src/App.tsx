@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AnnoncesProvider } from './store/annonces'
 import { ConversationsProvider } from './store/conversations'
+import { UserProfileProvider } from './store/userProfile'
 import Splash from './pages/onboarding/Splash'
 import Landing from './pages/onboarding/Landing'
 import Signup from './pages/onboarding/Signup'
@@ -27,6 +28,7 @@ import OwnerMap from './pages/owner/Map'
 
 function App() {
   return (
+    <UserProfileProvider>
     <AnnoncesProvider>
     <ConversationsProvider>
     <div className="min-h-screen bg-gray-200 flex items-center justify-center">
@@ -61,6 +63,7 @@ function App() {
     </div>
     </ConversationsProvider>
     </AnnoncesProvider>
+    </UserProfileProvider>
   )
 }
 

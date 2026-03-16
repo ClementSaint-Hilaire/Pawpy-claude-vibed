@@ -65,6 +65,7 @@ function CheckCircleIcon() {
 interface Props {
   onClose: () => void
   onConfirm: (data: WalkFormData) => void
+  userName?: string
 }
 
 export interface WalkFormData {
@@ -78,7 +79,7 @@ export interface WalkFormData {
   selectedPetIds: string[]
 }
 
-export default function NouvellePromenadeModal({ onClose, onConfirm }: Props) {
+export default function NouvellePromenadeModal({ onClose, onConfirm, userName = 'Utilisateur' }: Props) {
   const today = new Date().toISOString().split('T')[0]
   const [visible, setVisible] = useState(false)
 
@@ -151,12 +152,12 @@ export default function NouvellePromenadeModal({ onClose, onConfirm }: Props) {
           <button className="flex items-center gap-4 h-[68px] w-full">
             <div className="w-[54px] h-[54px] rounded-full bg-brand-light shrink-0 overflow-hidden">
               <div className="w-full h-full bg-gradient-to-br from-brand-light to-brand/20 rounded-full flex items-center justify-center text-brand font-semibold text-lg">
-                É
+                {userName.charAt(0).toUpperCase()}
               </div>
             </div>
             <div className="flex-1 flex items-center justify-between min-w-0">
               <p className="text-base font-medium text-text-primary leading-[1.375] truncate">
-                Élisabeth Quilomaitre
+                {userName}
               </p>
               <div className="flex items-center gap-2 text-text-secondary shrink-0 ml-2">
                 <span className="text-sm">Modifier</span>

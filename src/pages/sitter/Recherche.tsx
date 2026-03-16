@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useAnnonces, type Annonce } from '../../store/annonces'
 import { useConversations } from '../../store/conversations'
-
-const CURRENT_SITTER_NAME = 'Jean Dupont'
+import { useUserProfile, fullName } from '../../store/userProfile'
 
 const glassStyle = 'bg-gradient-to-r from-white/80 to-white/80 shadow-[0px_8px_30px_0px_rgba(214,213,212,0.4),0px_0px_4px_0px_rgba(214,213,212,0.3)]'
 
@@ -112,9 +111,11 @@ export default function SitterRecherche() {
   const navigate = useNavigate()
   const { annonces } = useAnnonces()
   const { startConversation } = useConversations()
+  const { profile } = useUserProfile()
+  const myName = fullName(profile)
 
   function handleAnnonceClick(annonce: Annonce) {
-    const convId = startConversation(annonce.id, annonce.title, annonce.userName, CURRENT_SITTER_NAME)
+    const convId = startConversation(annonce.id, annonce.title, annonce.userName, myName)
     navigate(`/sitter/messagerie/${convId}`)
   }
 

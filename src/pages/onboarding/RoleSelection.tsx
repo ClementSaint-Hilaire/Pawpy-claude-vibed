@@ -1,12 +1,15 @@
 import { useNavigate } from 'react-router-dom'
 import BackButton from '../../components/ui/BackButton'
 import PageDots from '../../components/ui/PageDots'
+import { useUserProfile } from '../../store/userProfile'
 
 export default function RoleSelection() {
   const navigate = useNavigate()
+  const { updateProfile } = useUserProfile()
 
   const selectRole = (role: 'owner' | 'walker') => {
     localStorage.setItem('role', role)
+    updateProfile({ role })
     navigate('/onboarding/profile')
   }
 

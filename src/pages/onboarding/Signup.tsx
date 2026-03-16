@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import BackButton from '../../components/ui/BackButton'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
+import { useUserProfile } from '../../store/userProfile'
 
 function GoogleIcon() {
   return (
@@ -25,6 +26,7 @@ function AppleIcon() {
 
 export default function Signup() {
   const navigate = useNavigate()
+  const { updateProfile } = useUserProfile()
   const [email, setEmail] = useState('')
 
   return (
@@ -81,7 +83,7 @@ export default function Signup() {
           <p>Vous avez déjà un compte ?</p>
           <p className="text-brand font-medium cursor-pointer">Connexion</p>
         </div>
-        <Button onClick={() => navigate('/onboarding/password')}>
+        <Button onClick={() => { updateProfile({ email }); navigate('/onboarding/password') }}>
           Créer mon compte
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M4 10H16M10 4L16 10L10 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

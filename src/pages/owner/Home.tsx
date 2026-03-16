@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import OwnerBottomTabBar from '../../components/owner/BottomTabBar'
 import NouvellePromenadeModal, { type WalkFormData } from '../../components/owner/NouvellePromenadeModal'
 import { useAnnonces } from '../../store/annonces'
+import { useUserProfile, fullName } from '../../store/userProfile'
 
 interface WalkCard {
   id: string
@@ -128,11 +129,14 @@ export default function OwnerHome() {
   const navigate = useNavigate()
   const [showModal, setShowModal] = useState(false)
   const { addAnnonce } = useAnnonces()
+  const { profile } = useUserProfile()
+  const myName = fullName(profile)
+  const myLocation = profile.postal || ''
 
   function handleConfirm(data: WalkFormData) {
     addAnnonce({
-      userName: 'Élisabeth Quilomaitre',
-      location: 'Paris VIIIe',
+      userName: myName,
+      location: myLocation,
       title: data.offerName || 'Nouvelle promenade',
       description: data.notes || '',
       startDate: data.startDate,
@@ -186,6 +190,7 @@ export default function OwnerHome() {
         <NouvellePromenadeModal
           onClose={() => setShowModal(false)}
           onConfirm={handleConfirm}
+          userName={myName}
         />
       )}
     </div>

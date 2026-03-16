@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import OwnerBottomTabBar from '../../components/owner/BottomTabBar'
 import { useConversations } from '../../store/conversations'
-
-const OWNER_NAME = 'Élisabeth Quilomaitre'
+import { useUserProfile, fullName } from '../../store/userProfile'
 
 const glassStyle = 'bg-gradient-to-r from-white/80 to-white/80 shadow-[0px_8px_30px_0px_rgba(214,213,212,0.4),0px_0px_4px_0px_rgba(214,213,212,0.3)]'
 
@@ -50,7 +49,9 @@ function ConversationRow({ name, subtitle, hasNotification = false, onClick }: C
 export default function OwnerMessagerie() {
   const navigate = useNavigate()
   const { conversations } = useConversations()
-  const myConversations = conversations.filter((c) => c.ownerName === OWNER_NAME)
+  const { profile } = useUserProfile()
+  const myName = fullName(profile)
+  const myConversations = conversations.filter((c) => c.ownerName === myName)
 
   return (
     <div className="flex flex-col h-full bg-bg-primary pt-[62px] pb-[127px] px-4 gap-8 overflow-y-auto">

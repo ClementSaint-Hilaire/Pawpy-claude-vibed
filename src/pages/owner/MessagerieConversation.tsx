@@ -150,7 +150,7 @@ export default function OwnerMessagerieConversation() {
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 pt-[62px] px-4 pb-3 flex items-center justify-between">
         <button
-          onClick={() => navigate('/owner/messagerie')}
+          onClick={() => navigate(-1)}
           className={`flex items-center justify-center p-3 rounded-full flex-shrink-0 text-text-primary ${glassStyle}`}
         >
           <ChevronLeftIcon />

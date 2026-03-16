@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import BottomTabBar from '../../components/sitter/BottomTabBar'
+import { useUserProfile } from '../../store/userProfile'
 
 function EditIcon() {
   return (
@@ -77,6 +78,11 @@ function FieldGroup({ fields }: FieldGroupProps) {
 }
 
 export default function SitterProfil() {
+  const { profile } = useUserProfile()
+  const firstName = profile.firstName || 'Prénom'
+  const lastName = profile.lastName || 'Nom'
+  const postal = profile.postal || 'Localisation'
+
   return (
     <div className="flex flex-col h-full bg-bg-primary pt-[62px] pb-[127px] px-4 gap-8 overflow-y-auto">
       {/* Title */}
@@ -117,10 +123,10 @@ export default function SitterProfil() {
         </h2>
         <FieldGroup
           fields={[
-            { label: 'Jeanne', rightIcon: 'edit' },
-            { label: 'Darbalette', rightIcon: 'edit' },
-            { label: 'XXe arrondissement', rightIcon: 'edit' },
-            { label: '26 ans', rightIcon: 'edit' },
+            { label: firstName, rightIcon: 'edit' },
+            { label: lastName, rightIcon: 'edit' },
+            { label: postal, rightIcon: 'edit' },
+            { label: 'Âge', rightIcon: 'edit', placeholder: true },
             { label: 'Description', rightIcon: 'chevron' },
           ]}
         />

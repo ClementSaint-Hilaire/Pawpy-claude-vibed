@@ -4,9 +4,11 @@ import BackButton from '../../components/ui/BackButton'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import PageDots from '../../components/ui/PageDots'
+import { useUserProfile } from '../../store/userProfile'
 
 export default function Profile() {
   const navigate = useNavigate()
+  const { updateProfile } = useUserProfile()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [postal, setPostal] = useState('')
@@ -47,7 +49,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <Button onClick={() => navigate('/onboarding/verify')}>
+      <Button onClick={() => { updateProfile({ firstName, lastName, postal }); navigate('/onboarding/verify') }}>
         Étape suivante
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path d="M4 10H16M10 4L16 10L10 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

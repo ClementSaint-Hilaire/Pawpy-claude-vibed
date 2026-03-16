@@ -35,7 +35,7 @@ export default function Certification() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <Button variant="secondary">
+        <Button variant="secondary" onClick={() => navigate('/sitter/home')}>
           Importer ma certification ACACED
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M12 4V16M12 16L7 11M12 16L17 11M4 20H20" stroke="#010a05" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

@@ -85,7 +85,7 @@ export default function OwnerMessagerieConversation() {
 
   useEffect(() => {
     if (id) markRead(id)
-  }, [id])
+  }, [id, markRead])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'instant' })

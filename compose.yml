@@ -1,0 +1,24 @@
+services:
+  vue-app-beta:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - VIRTUAL_HOST=beta.pawpy.fr
+      - LETSENCRYPT_HOST=beta.pawpy.fr
+      - LETSENCRYPT_EMAIL=contact@pawpy.fr
+    networks:
+      - web
+    restart: unless-stopped
+
+volumes:
+  nginx-certs:
+  nginx-vhost:
+  nginx-html:
+  nginx-acme:
+
+networks:
+  web:
+    name: landing-page_web
+    external: true

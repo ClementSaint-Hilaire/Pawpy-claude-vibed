@@ -26,7 +26,7 @@ export default function Verify() {
     if (role === 'walker') {
       navigate('/onboarding/certification')
     } else {
-      navigate('/')
+      navigate('/owner/home')
     }
   }
 

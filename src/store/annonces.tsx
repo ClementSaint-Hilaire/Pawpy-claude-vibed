@@ -44,7 +44,9 @@ function loadFromStorage(): Annonce[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) return JSON.parse(raw) as Annonce[]
-  } catch {}
+  } catch {
+    // ignore parse errors
+  }
   return INITIAL_ANNONCES
 }
 
@@ -61,7 +63,9 @@ export function AnnoncesProvider({ children }: { children: ReactNode }) {
       if (e.key === STORAGE_KEY && e.newValue) {
         try {
           setAnnonces(JSON.parse(e.newValue) as Annonce[])
-        } catch {}
+        } catch {
+          // ignore parse errors
+        }
       }
     }
     window.addEventListener('storage', onStorage)
@@ -86,6 +90,7 @@ export function AnnoncesProvider({ children }: { children: ReactNode }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAnnonces() {
   const ctx = useContext(AnnoncesContext)
   if (!ctx) throw new Error('useAnnonces must be used inside AnnoncesProvider')

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import OwnerBottomTabBar from '../../components/owner/BottomTabBar'
 import BackButton from '../../components/ui/BackButton'
 
@@ -104,7 +103,6 @@ function TransactionGroup({ label, transactions, hidden }: TransactionGroupProps
 }
 
 export default function OwnerProfilTransactions() {
-  const navigate = useNavigate()
   const [hidden, setHidden] = useState(false)
 
   return (

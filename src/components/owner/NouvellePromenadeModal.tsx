@@ -100,12 +100,6 @@ export default function NouvellePromenadeModal({ onClose, onConfirm }: Props) {
   const [notes, setNotes] = useState('')
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>([MOCK_PETS[0].id])
 
-  function formatDate(dateStr: string) {
-    if (!dateStr) return ''
-    const d = new Date(dateStr + 'T00:00:00')
-    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-  }
-
   function togglePet(id: string) {
     setSelectedPetIds(prev =>
       prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]

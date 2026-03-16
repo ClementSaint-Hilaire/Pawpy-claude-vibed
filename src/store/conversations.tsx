@@ -36,7 +36,9 @@ function loadFromStorage(): Conversation[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) return JSON.parse(raw) as Conversation[]
-  } catch {}
+  } catch {
+    // ignore parse errors
+  }
   return []
 }
 
@@ -53,7 +55,9 @@ export function ConversationsProvider({ children }: { children: ReactNode }) {
       if (e.key === STORAGE_KEY && e.newValue) {
         try {
           setConversations(JSON.parse(e.newValue) as Conversation[])
-        } catch {}
+        } catch {
+          // ignore parse errors
+        }
       }
     }
     window.addEventListener('storage', onStorage)
@@ -117,6 +121,7 @@ export function ConversationsProvider({ children }: { children: ReactNode }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useConversations() {
   const ctx = useContext(ConversationsContext)
   if (!ctx) throw new Error('useConversations must be used inside ConversationsProvider')

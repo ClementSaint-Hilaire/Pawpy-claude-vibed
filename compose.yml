@@ -3,9 +3,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    expose:
+      - "80"
     environment:
       - NODE_ENV=production
       - VIRTUAL_HOST=beta.pawpy.fr
+      - VIRTUAL_PORT=80
       - LETSENCRYPT_HOST=beta.pawpy.fr
       - LETSENCRYPT_EMAIL=contact@pawpy.fr
     networks:
@@ -20,5 +23,4 @@ volumes:
 
 networks:
   web:
-    name: landing-page_web
     external: true

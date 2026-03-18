@@ -26,11 +26,11 @@ rsync -avz --progress \
     nginx.conf \
     Dockerfile \
     compose.yml \
-    $VPS:~/pawpy-beta/
+    $VPS:../home/clement/pawpy-beta/
 
 echo "🐳 Deploying on VPS..."
 ssh $VPS << 'ENDSSH'
-cd ~/pawpy-beta
+cd ../clement/pawpy-beta
 docker network create web 2>/dev/null || true
 docker compose down
 docker compose up -d --build

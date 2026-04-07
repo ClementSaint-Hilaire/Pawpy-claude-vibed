@@ -1,9 +1,12 @@
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import OwnerBottomTabBar from '../../components/owner/BottomTabBar'
 import { useConversations } from '../../store/conversations'
 import { useUserProfile, fullName } from '../../store/userProfile'
 
 const glassStyle = 'bg-gradient-to-r from-white/80 to-white/80 shadow-[0px_8px_30px_0px_rgba(214,213,212,0.4),0px_0px_4px_0px_rgba(214,213,212,0.3)]'
+
+const REVEAL_WIDTH = 68
 
 function FilterIcon() {
   return (
@@ -21,34 +24,114 @@ function ChevronRightIcon() {
   )
 }
 
-interface ConversationRowProps {
+function ArchiveIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M3 4H21V8H3V4Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5 8V20H19V8" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M10 12H14" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+interface SwipeableConversationRowProps {
   name: string
   subtitle: string
   hasNotification?: boolean
   onClick?: () => void
+  onDelete: () => void
 }
 
-function ConversationRow({ name, subtitle, hasNotification = false, onClick }: ConversationRowProps) {
+function SwipeableConversationRow({ name, subtitle, hasNotification = false, onClick, onDelete }: SwipeableConversationRowProps) {
+  const [offset, setOffset] = useState(0)
+  const [isRevealed, setIsRevealed] = useState(false)
+  const startX = useRef(0)
+  const dragging = useRef(false)
+  const pointerDown = useRef(false)
+  const offsetRef = useRef(0)
+
+  function onPointerDown(e: React.PointerEvent) {
+    startX.current = e.clientX
+    dragging.current = false
+    pointerDown.current = true
+    ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+  }
+
+  function onPointerMove(e: React.PointerEvent) {
+    if (!pointerDown.current) return
+    const dx = e.clientX - startX.current
+    if (Math.abs(dx) > 5) dragging.current = true
+    const base = isRevealed ? REVEAL_WIDTH : 0
+    const newOffset = Math.max(0, Math.min(base + dx, REVEAL_WIDTH))
+    offsetRef.current = newOffset
+    setOffset(newOffset)
+  }
+
+  function onPointerUp() {
+    pointerDown.current = false
+    dragging.current = false
+    if (offsetRef.current > REVEAL_WIDTH / 2) {
+      setOffset(REVEAL_WIDTH)
+      setIsRevealed(true)
+    } else {
+      setOffset(0)
+      setIsRevealed(false)
+    }
+  }
+
+  function handleClick() {
+    if (dragging.current) return
+    if (isRevealed) {
+      setOffset(0)
+      setIsRevealed(false)
+      return
+    }
+    onClick?.()
+  }
+
   return (
-    <div onClick={onClick} className="flex gap-4 items-center h-[68px] border-t border-stroke/50 w-full cursor-pointer">
-      <div className="w-[54px] h-[54px] rounded-full bg-[#9baea3] flex-shrink-0" />
-      <div className="flex-1 flex flex-col justify-center gap-0.5 overflow-hidden">
-        <p className="text-base font-medium text-text-primary leading-[1.2] truncate">{name}</p>
-        <p className="text-base font-normal text-text-secondary leading-[1.2] tracking-[-0.16px] truncate">{subtitle}</p>
+    <div className="relative overflow-hidden">
+      {/* Delete button revealed on swipe left */}
+      <div className="absolute left-0 top-0 bottom-0 w-[68px] flex items-center justify-center">
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete() }}
+          className="w-[52px] h-[52px] bg-[#ff383c] rounded-full flex items-center justify-center flex-shrink-0"
+        >
+          <ArchiveIcon />
+        </button>
       </div>
-      {hasNotification && (
-        <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />
-      )}
-      <span className="text-text-secondary flex-shrink-0">
-        <ChevronRightIcon />
-      </span>
+
+      {/* Swipeable row */}
+      <div
+        className="relative bg-bg-primary flex gap-4 items-center h-[68px] border-t border-stroke/50 w-full cursor-pointer touch-pan-y select-none"
+        style={{
+          transform: `translateX(${offset}px)`,
+          transition: dragging.current ? 'none' : 'transform 0.2s ease',
+        }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onClick={handleClick}
+      >
+        <div className="w-[54px] h-[54px] rounded-full bg-[#9baea3] flex-shrink-0" />
+        <div className="flex-1 flex flex-col justify-center gap-0.5 overflow-hidden">
+          <p className="text-base font-medium text-text-primary leading-[1.2] truncate">{name}</p>
+          <p className="text-base font-normal text-text-secondary leading-[1.2] tracking-[-0.16px] truncate">{subtitle}</p>
+        </div>
+        {hasNotification && (
+          <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />
+        )}
+        <span className="text-text-secondary flex-shrink-0">
+          <ChevronRightIcon />
+        </span>
+      </div>
     </div>
   )
 }
 
 export default function OwnerMessagerie() {
   const navigate = useNavigate()
-  const { conversations } = useConversations()
+  const { conversations, deleteConversation } = useConversations()
   const { profile } = useUserProfile()
   const myName = fullName(profile)
   const myConversations = conversations.filter((c) => c.ownerName === myName)
@@ -73,12 +156,13 @@ export default function OwnerMessagerie() {
           </p>
         )}
         {myConversations.map((conv) => (
-          <ConversationRow
+          <SwipeableConversationRow
             key={conv.id}
             name={conv.sitterName}
             subtitle={conv.annonceTitle}
             hasNotification={conv.isNew}
             onClick={() => navigate(`/owner/messagerie/${conv.id}`)}
+            onDelete={() => deleteConversation(conv.id)}
           />
         ))}
       </div>

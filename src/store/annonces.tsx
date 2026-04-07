@@ -12,12 +12,18 @@ export interface Annonce {
   endTime: string
   price: string
   petIds: string[]
+  requiredSkills: string[]
+  itinerary: string[]
+  accessories: string[]
   createdAt: number
+  acceptedBy?: string
 }
 
 interface AnnoncesContextValue {
   annonces: Annonce[]
   addAnnonce: (a: Omit<Annonce, 'id' | 'createdAt'>) => void
+  acceptAnnonce: (id: string, sitterName: string) => void
+  deleteAnnonce: (id: string) => void
 }
 
 const AnnoncesContext = createContext<AnnoncesContextValue | null>(null)
@@ -36,6 +42,9 @@ const INITIAL_ANNONCES: Annonce[] = [
     endTime: '00:00',
     price: '30.00',
     petIds: [],
+    requiredSkills: [],
+    itinerary: [],
+    accessories: [],
     createdAt: Date.now() - 3600_000,
   },
 ]
@@ -83,8 +92,24 @@ export function AnnoncesProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  function acceptAnnonce(id: string, sitterName: string) {
+    setAnnonces(prev => {
+      const next = prev.map(a => a.id === id ? { ...a, acceptedBy: sitterName } : a)
+      saveToStorage(next)
+      return next
+    })
+  }
+
+  function deleteAnnonce(id: string) {
+    setAnnonces(prev => {
+      const next = prev.filter(a => a.id !== id)
+      saveToStorage(next)
+      return next
+    })
+  }
+
   return (
-    <AnnoncesContext.Provider value={{ annonces, addAnnonce }}>
+    <AnnoncesContext.Provider value={{ annonces, addAnnonce, acceptAnnonce, deleteAnnonce }}>
       {children}
     </AnnoncesContext.Provider>
   )

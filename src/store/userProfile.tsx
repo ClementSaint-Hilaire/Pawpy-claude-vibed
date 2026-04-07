@@ -5,7 +5,11 @@ export interface UserProfile {
   firstName: string
   lastName: string
   postal: string
+  age: string
+  description: string
   role: 'owner' | 'walker' | null
+  photoUrl?: string
+  galleryPhotos?: string[]
 }
 
 interface UserProfileContextValue {
@@ -20,6 +24,8 @@ const DEFAULT_PROFILE: UserProfile = {
   firstName: '',
   lastName: '',
   postal: '',
+  age: '',
+  description: '',
   role: null,
 }
 

@@ -18,15 +18,17 @@ export interface Conversation {
   annonceTitle: string
   ownerName: string
   sitterName: string
+  sitterId: string
   messages: Message[]
   isNew: boolean
 }
 
 interface ConversationsContextValue {
   conversations: Conversation[]
-  startConversation: (annonceId: string, annonceTitle: string, ownerName: string, sitterName: string) => string
+  startConversation: (annonceId: string, annonceTitle: string, ownerName: string, sitterName: string, sitterId: string) => string
   sendMessage: (convId: string, message: Message) => void
   markRead: (convId: string) => void
+  deleteConversation: (convId: string) => void
 }
 
 const ConversationsContext = createContext<ConversationsContextValue | null>(null)
@@ -64,7 +66,7 @@ export function ConversationsProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('storage', onStorage)
   }, [])
 
-  function startConversation(annonceId: string, annonceTitle: string, ownerName: string, sitterName: string): string {
+  function startConversation(annonceId: string, annonceTitle: string, ownerName: string, sitterName: string, sitterId: string): string {
     const stored = loadFromStorage()
     const existing = stored.find(
       (c) => c.annonceId === annonceId && c.sitterName === sitterName,
@@ -83,6 +85,7 @@ export function ConversationsProvider({ children }: { children: ReactNode }) {
       annonceTitle,
       ownerName,
       sitterName,
+      sitterId,
       messages: [initialMessage],
       isNew: true,
     }
@@ -114,8 +117,16 @@ export function ConversationsProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  function deleteConversation(convId: string) {
+    setConversations(prev => {
+      const next = prev.filter((c) => c.id !== convId)
+      saveToStorage(next)
+      return next
+    })
+  }
+
   return (
-    <ConversationsContext.Provider value={{ conversations, startConversation, sendMessage, markRead }}>
+    <ConversationsContext.Provider value={{ conversations, startConversation, sendMessage, markRead, deleteConversation }}>
       {children}
     </ConversationsContext.Provider>
   )

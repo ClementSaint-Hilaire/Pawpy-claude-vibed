@@ -3,7 +3,17 @@ import BackButton from '../../components/ui/BackButton'
 import Button from '../../components/ui/Button'
 import PageDots from '../../components/ui/PageDots'
 
-export default function Formation() {
+function InfoIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M10 9V14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="10" cy="6.5" r="0.75" fill="currentColor"/>
+    </svg>
+  )
+}
+
+export default function OwnerCertificationInfo() {
   const navigate = useNavigate()
 
   return (
@@ -18,13 +28,13 @@ export default function Formation() {
           Pawpy repose sur la certification de ses promeneurs
         </h1>
 
-        <div className="text-base font-normal text-text-primary leading-[1.2] tracking-[-0.16px] flex flex-col gap-4">
+        <div className="flex flex-col gap-4 text-base text-text-primary leading-[1.2] tracking-[-0.16px]">
           <p>
             Afin d'instaurer un climat de confiance, les promeneurs devront insérer leur certification.
           </p>
           <p>
-            Si vous n'en avez pas Anomi propose une{' '}
-            <span className="underline cursor-pointer">formation accessible ici</span>
+            Si vous n'en avez pas, Anomi propose une{' '}
+            <span className="underline">formation accessible ici</span>
           </p>
         </div>
       </div>
@@ -32,12 +42,9 @@ export default function Formation() {
       <div className="flex flex-col gap-4">
         <Button variant="secondary" onClick={() => {}}>
           Je veux en savoir plus
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="9" stroke="#010a05" strokeWidth="1.5"/>
-            <path d="M12 8v1M12 11v5" stroke="#010a05" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
+          <InfoIcon />
         </Button>
-        <Button onClick={() => navigate('/owner/home')}>
+        <Button onClick={() => navigate('/onboarding')}>
           J'ai compris !
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M4 10H16M10 4L16 10L10 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

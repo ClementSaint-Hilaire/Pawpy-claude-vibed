@@ -1,6 +1,10 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomTabBar from '../../components/sitter/BottomTabBar'
+import PremiumModal from '../../components/sitter/PremiumModal'
 import { useUserProfile } from '../../store/userProfile'
+import { InlineField } from '../../components/ui/InlineField'
+import PhotoPickerModal from '../../components/ui/PhotoPickerModal'
 
 function EditIcon() {
   return (
@@ -35,25 +39,29 @@ function PlusIcon() {
   )
 }
 
-interface SettingFieldProps {
-  label: string
-  rightIcon?: 'chevron' | 'edit' | 'check' | 'plus'
-  placeholder?: boolean
-  to?: string
+function CloseIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
 }
 
 const glassStyle = 'bg-gradient-to-r from-white/80 to-white/80 shadow-[0px_8px_30px_0px_rgba(214,213,212,0.4),0px_0px_4px_0px_rgba(214,213,212,0.3)]'
 
-function SettingField({ label, rightIcon = 'edit', placeholder = false, to }: SettingFieldProps) {
-  const navigate = useNavigate()
+function NavField({ label, rightIcon = 'chevron', placeholder = false, onClick }: {
+  label: string
+  rightIcon?: 'chevron' | 'check' | 'plus'
+  placeholder?: boolean
+  onClick?: () => void
+}) {
   return (
-    <button onClick={to ? () => navigate(to) : undefined} className="flex items-center gap-2 h-12 px-4 w-full text-left">
+    <button className="flex items-center gap-2 h-12 px-4 w-full text-left" onClick={onClick}>
       <span className={`flex-1 text-base leading-[1.2] tracking-[-0.16px] truncate ${placeholder ? 'text-text-tertiary' : 'text-text-primary'}`}>
         {label}
       </span>
       <span className="text-text-secondary flex-shrink-0">
         {rightIcon === 'chevron' && <ChevronRightIcon />}
-        {rightIcon === 'edit' && <EditIcon />}
         {rightIcon === 'check' && <CheckIcon />}
         {rightIcon === 'plus' && <PlusIcon />}
       </span>
@@ -61,16 +69,14 @@ function SettingField({ label, rightIcon = 'edit', placeholder = false, to }: Se
   )
 }
 
-interface FieldGroupProps {
-  fields: { label: string; rightIcon?: 'chevron' | 'edit' | 'check' | 'plus'; placeholder?: boolean; to?: string }[]
-}
-
-function FieldGroup({ fields }: FieldGroupProps) {
+function NavFieldGroup({ fields }: {
+  fields: { label: string; rightIcon?: 'chevron' | 'check' | 'plus'; placeholder?: boolean; onClick?: () => void }[]
+}) {
   return (
     <div className="flex flex-col w-full rounded-xl overflow-hidden bg-bg-secondary">
-      {fields.map((field, i) => (
+      {fields.map((f, i) => (
         <div key={i} className={i < fields.length - 1 ? 'border-b border-stroke/50' : ''}>
-          <SettingField {...field} to={field.to} />
+          <NavField {...f} />
         </div>
       ))}
     </div>
@@ -78,10 +84,11 @@ function FieldGroup({ fields }: FieldGroupProps) {
 }
 
 export default function SitterProfil() {
-  const { profile } = useUserProfile()
-  const firstName = profile.firstName || 'Prénom'
-  const lastName = profile.lastName || 'Nom'
-  const postal = profile.postal || 'Localisation'
+  const navigate = useNavigate()
+  const { profile, updateProfile } = useUserProfile()
+  const [showPhotoPicker, setShowPhotoPicker] = useState(false)
+  const [showPremiumBanner, setShowPremiumBanner] = useState(true)
+  const [showPremiumModal, setShowPremiumModal] = useState(false)
 
   return (
     <div className="flex flex-col h-full bg-bg-primary pt-[62px] pb-[127px] px-4 gap-8 overflow-y-auto">
@@ -92,48 +99,86 @@ export default function SitterProfil() {
 
       {/* Profile photo */}
       <div className="flex items-end justify-center pr-8">
-        <div className="w-32 h-32 rounded-full bg-brand-light flex-shrink-0 -mr-8" />
-        <button className={`flex items-center justify-center p-3 rounded-full ${glassStyle} -mr-8 flex-shrink-0`}>
+        {profile.photoUrl
+          ? <img src={profile.photoUrl} alt="Photo de profil" className="w-32 h-32 rounded-full object-cover flex-shrink-0 -mr-8" />
+          : <div className="w-32 h-32 rounded-full bg-brand-light flex-shrink-0 -mr-8" />
+        }
+        <button
+          className={`flex items-center justify-center p-3 rounded-full ${glassStyle} -mr-8 flex-shrink-0`}
+          onClick={() => setShowPhotoPicker(true)}
+        >
           <span className="text-text-primary"><EditIcon /></span>
         </button>
       </div>
 
       {/* Premium banner */}
-      <div className="bg-bg-secondary rounded-lg p-3 flex items-center gap-6">
-        <div className="flex-1 flex flex-col gap-2">
-          <p className="text-base font-medium text-text-primary leading-[1.2]">
-            Essayez Pawpy Premium gratuitement
-          </p>
-          <p className="text-base font-normal text-text-secondary leading-[1.2] tracking-[-0.16px]">
-            1 mois offerts pour profiter du boost de votre profil à 0€ et plus encore
-          </p>
-        </div>
-        <div className="w-[66px] h-[64px] bg-brand-light rounded-lg flex-shrink-0 flex items-center justify-center">
-          <span className="text-2xl">🎁</span>
-        </div>
-      </div>
+      {showPremiumBanner && (
+        <button
+          className="bg-[#fce9f9] rounded-2xl p-3 flex items-start gap-4 text-left w-full"
+          onClick={() => setShowPremiumModal(true)}
+        >
+          <div className="w-[66px] h-[64px] rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden">
+            <span className="text-4xl">🎁</span>
+          </div>
+          <div className="flex-1 flex flex-col gap-2 min-w-0">
+            <p className="text-base font-semibold text-text-primary leading-[1.2]">
+              Essayez Pawpy Premium gratuitement
+            </p>
+            <p className="text-[11px] font-normal text-text-secondary leading-[1.1]">
+              1 mois offerts pour profiter du boost de votre profil à 0€ et plus encore
+            </p>
+          </div>
+          <div
+            className="flex-shrink-0 p-1 text-text-secondary"
+            onClick={e => { e.stopPropagation(); setShowPremiumBanner(false) }}
+          >
+            <CloseIcon />
+          </div>
+        </button>
+      )}
+      {showPremiumModal && <PremiumModal onClose={() => setShowPremiumModal(false)} />}
 
       {/* Wallet */}
-      <FieldGroup fields={[{ label: 'Mon porte-monnaie', rightIcon: 'chevron', to: '/sitter/profil/transactions' }]} />
+      <button
+        className="flex items-center gap-3 w-full rounded-xl bg-bg-secondary px-4 py-4 h-14 text-left"
+        onClick={() => navigate('/sitter/profil/transactions')}
+      >
+        <span className="flex-1 text-base leading-[1.2] tracking-[-0.16px] text-text-primary">
+          Mon porte-monnaie
+        </span>
+        <span className="text-text-secondary flex-shrink-0">
+          <ChevronRightIcon />
+        </span>
+      </button>
 
       {/* My info section */}
       <div className="flex flex-col gap-4">
         <h2 className="text-[22px] font-semibold text-text-primary leading-[1.2] tracking-[-0.44px]">
           Mes informations
         </h2>
-        <FieldGroup
+        <div className="flex flex-col w-full rounded-xl overflow-hidden bg-bg-secondary">
+          <div className="border-b border-stroke/50">
+            <InlineField value={profile.firstName} placeholder="Prénom" onSave={v => updateProfile({ firstName: v })} isPlaceholder={!profile.firstName} />
+          </div>
+          <div className="border-b border-stroke/50">
+            <InlineField value={profile.lastName} placeholder="Nom" onSave={v => updateProfile({ lastName: v })} isPlaceholder={!profile.lastName} />
+          </div>
+          <div className="border-b border-stroke/50">
+            <InlineField value={profile.postal} placeholder="Localisation" onSave={v => updateProfile({ postal: v })} isPlaceholder={!profile.postal} />
+          </div>
+          <div className="border-b border-stroke/50">
+            <InlineField value={profile.age} placeholder="Âge" onSave={v => updateProfile({ age: v })} isPlaceholder={!profile.age} />
+          </div>
+          <div>
+            <NavField label={profile.description || 'Description'} placeholder={!profile.description} onClick={() => navigate('/sitter/profil/description')} />
+          </div>
+        </div>
+
+        <NavFieldGroup
           fields={[
-            { label: firstName, rightIcon: 'edit' },
-            { label: lastName, rightIcon: 'edit' },
-            { label: postal, rightIcon: 'edit' },
-            { label: 'Âge', rightIcon: 'edit', placeholder: true },
-            { label: 'Description', rightIcon: 'chevron' },
-          ]}
-        />
-        <FieldGroup
-          fields={[
-            { label: 'Galerie photo & vidéo', rightIcon: 'chevron' },
-            { label: 'Espace communautée', rightIcon: 'chevron' },
+            { label: 'Galerie photo & vidéo', onClick: () => navigate('/sitter/profil/gallerie') },
+            { label: 'Espace communautée', onClick: () => navigate('/sitter/profil/communaute') },
+            { label: 'Compétences' },
           ]}
         />
       </div>
@@ -143,16 +188,28 @@ export default function SitterProfil() {
         <h2 className="text-[22px] font-semibold text-text-primary leading-[1.2] tracking-[-0.44px]">
           Certifications
         </h2>
-        <FieldGroup
-          fields={[
-            { label: 'Certifications Pawpy', rightIcon: 'chevron' },
-            { label: 'ACACED', rightIcon: 'check' },
-            { label: 'Importer une certification', rightIcon: 'plus', placeholder: true },
-          ]}
-        />
+        <div className="flex flex-col w-full rounded-xl overflow-hidden bg-bg-secondary">
+          <div className="border-b border-stroke/50">
+            <NavField label="Certifications Pawpy" />
+          </div>
+          <div className="border-b border-stroke/50">
+            <NavField label="Pawpy lvl 1" rightIcon="check" />
+          </div>
+          <div className="border-b border-stroke/50">
+            <NavField label="ACACED" rightIcon="check" />
+          </div>
+          <NavField label="Importer une certification" rightIcon="plus" placeholder />
+        </div>
       </div>
 
       <BottomTabBar activeTab="profil" />
+
+      {showPhotoPicker && (
+        <PhotoPickerModal
+          onClose={() => setShowPhotoPicker(false)}
+          onPhoto={dataUrl => updateProfile({ photoUrl: dataUrl })}
+        />
+      )}
     </div>
   )
 }

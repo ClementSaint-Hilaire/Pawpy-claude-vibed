@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import BackButton from '../../components/ui/BackButton'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
+import PageDots from '../../components/ui/PageDots'
 import { useUserProfile } from '../../store/userProfile'
 
 function GoogleIcon() {
@@ -31,15 +32,14 @@ export default function Signup() {
 
   return (
     <div className="flex flex-col h-full bg-bg-primary pt-16 pb-8 px-4 gap-6">
-      {/* Header */}
-      <div className="flex items-center">
+      <div className="flex items-center justify-between">
         <BackButton to="/onboarding" />
+        <PageDots total={6} current={1} />
       </div>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col gap-8">
         <h1 className="text-[34px] font-semibold text-text-primary leading-[1.2] tracking-[-1.02px]">
-          Inscrivez vous<br />sur Pawpy
+          Commençons votre inscription sur Pawpy
         </h1>
 
         <div className="flex flex-col gap-4">
@@ -77,16 +77,15 @@ export default function Signup() {
         </div>
       </div>
 
-      {/* Bottom */}
       <div className="flex flex-col gap-4">
         <div className="text-center text-sm text-text-secondary">
           <p>Vous avez déjà un compte ?</p>
-          <p className="text-brand font-medium cursor-pointer">Connexion</p>
+          <p className="text-brand font-semibold cursor-pointer">Connexion</p>
         </div>
-        <Button onClick={() => { updateProfile({ email }); navigate('/onboarding/password') }}>
+        <Button onClick={() => { updateProfile({ email }); navigate('/onboarding/verify') }}>
           Créer mon compte
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M4 10H16M10 4L16 10L10 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </Button>
       </div>

@@ -1,34 +1,32 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../../components/ui/Button'
 
+const heroImage = 'https://www.figma.com/api/mcp/asset/d7456c72-814b-44fa-a445-c4b2aee5af4a'
+
 export default function Landing() {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const role = localStorage.getItem('role')
+    if (role === 'walker') navigate('/sitter/home', { replace: true })
+    else if (role === 'owner') navigate('/owner/home', { replace: true })
+  }, [])
+
   return (
-    <div className="flex flex-col h-full bg-bg-primary pt-16 pb-8 px-4">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-[28px] font-semibold text-text-primary leading-[1.2] tracking-[-0.56px]">
-            Pawpy
-          </h1>
-          <p className="text-base font-normal text-text-secondary leading-[1.2] tracking-[-0.16px]">
-            L'application de dogwalking<br />premium & certifiée.
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/onboarding/signup')}
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-white/80 shadow-[0px_8px_30px_0px_rgba(214,213,212,0.4),0px_0px_4px_0px_rgba(214,213,212,0.3)] active:opacity-70 transition-opacity"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M13 17L18 12L13 7M6 12H18" stroke="#010a05" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+    <div className="flex flex-col h-full bg-bg-primary pt-16 pb-8 px-4 gap-6">
+      <h1 className="text-[34px] font-semibold text-text-primary leading-[1.2] tracking-[-1.02px]">
+        L'application de dogwalking{'\n'}premium & certifiée.
+      </h1>
+
+      <div className="flex-1 flex items-center justify-center">
+        <img
+          src={heroImage}
+          alt=""
+          className="w-full max-w-[420px] object-contain"
+        />
       </div>
 
-      {/* Image zone — placeholder */}
-      <div className="flex-1" />
-
-      {/* Buttons */}
       <div className="flex flex-col gap-4">
         <Button variant="secondary" onClick={() => navigate('/onboarding/signup')}>
           Se connecter

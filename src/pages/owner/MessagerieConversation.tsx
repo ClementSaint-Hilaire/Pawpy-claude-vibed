@@ -155,9 +155,12 @@ export default function OwnerMessagerieConversation() {
         >
           <ChevronLeftIcon />
         </button>
-        <div className={`${glassStyle} px-4 h-[48px] flex items-center rounded-full`}>
+        <button
+          onClick={() => navigate(`/owner/recherche/${conversation.sitterId}`)}
+          className={`${glassStyle} px-4 h-[48px] flex items-center rounded-full`}
+        >
           <span className="text-sm font-normal text-[#140800] tracking-[-0.14px]">{conversation.sitterName}</span>
-        </div>
+        </button>
       </div>
 
       {/* Input bar */}

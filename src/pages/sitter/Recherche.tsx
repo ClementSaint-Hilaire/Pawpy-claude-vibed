@@ -1,38 +1,25 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAnnonces, type Annonce } from '../../store/annonces'
-import { useConversations } from '../../store/conversations'
-import { useUserProfile, fullName } from '../../store/userProfile'
+import { useFavorites } from '../../store/favorites'
+import BottomTabBar from '../../components/sitter/BottomTabBar'
+import FiltreModal from '../../components/sitter/FiltreModal'
 
 const glassStyle = 'bg-gradient-to-r from-white/80 to-white/80 shadow-[0px_8px_30px_0px_rgba(214,213,212,0.4),0px_0px_4px_0px_rgba(214,213,212,0.3)]'
 
 function FilterIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M3 6H21M6 12H18M10 18H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M17 3.25C15.1858 3.25 13.6725 4.53832 13.325 6.25L4 6.25C3.58579 6.25 3.25 6.58579 3.25 7C3.25 7.41421 3.58579 7.75 4 7.75L13.325 7.75C13.6725 9.46168 15.1858 10.75 17 10.75C19.0711 10.75 20.75 9.07107 20.75 7C20.75 4.92893 19.0711 3.25 17 3.25ZM14.75 7C14.75 5.75736 15.7574 4.75 17 4.75C18.2426 4.75 19.25 5.75736 19.25 7C19.25 8.24264 18.2426 9.25 17 9.25C15.7574 9.25 14.75 8.24264 14.75 7Z" fill="currentColor"/>
+      <path fillRule="evenodd" clipRule="evenodd" d="M10.675 16.25C10.3275 14.5383 8.81422 13.25 7 13.25C4.92893 13.25 3.25 14.9289 3.25 17C3.25 19.0711 4.92893 20.75 7 20.75C8.81422 20.75 10.3275 19.4617 10.675 17.75H20C20.4142 17.75 20.75 17.4142 20.75 17C20.75 16.5858 20.4142 16.25 20 16.25H10.675ZM4.75 17C4.75 15.7574 5.75736 14.75 7 14.75C8.24264 14.75 9.25 15.7574 9.25 17C9.25 18.2426 8.24264 19.25 7 19.25C5.75736 19.25 4.75 18.2426 4.75 17Z" fill="currentColor"/>
     </svg>
   )
 }
 
-function HomeIcon() {
-  return (
-    <svg width="20" height="21" viewBox="0 0 20 21" fill="none">
-      <path d="M2 8.5L10 2.5L18 8.5V18.5C18 19.0523 17.5523 19.5 17 19.5H13V14.5H7V19.5H3C2.44772 19.5 2 19.0523 2 18.5V8.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  )
-}
 
-function SearchIcon() {
+function HeartIcon({ filled }: { filled?: boolean }) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.5"/>
-      <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  )
-}
-
-function HeartIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'}>
       <path d="M12 21C12 21 3 14.5 3 8.5C3 6.01472 5.01472 4 7.5 4C9.02501 4 10.3789 4.76604 11.1924 5.93431L12 7L12.8076 5.93431C13.6211 4.76604 14.975 4 16.5 4C18.9853 4 21 6.01472 21 8.5C21 14.5 12 21 12 21Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
@@ -51,7 +38,9 @@ function formatDate(dateStr: string) {
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
 }
 
-function AnnonceCard({ userName, location, title, description, startDate, startTime, endTime, price, onClick }: Annonce & { onClick?: () => void }) {
+function AnnonceCard({ id, userName, location, title, description, startDate, startTime, endTime, price, onClick }: Annonce & { onClick?: () => void }) {
+  const { isFavoriteAnnonce, toggleFavoriteAnnonce } = useFavorites()
+  const favorited = isFavoriteAnnonce(id)
   const date = formatDate(startDate)
   const timeRange = `${startTime} - ${endTime}`
   return (
@@ -59,44 +48,47 @@ function AnnonceCard({ userName, location, title, description, startDate, startT
       {/* User info */}
       <div className="flex items-center">
         <div className="flex-1 flex gap-2 items-center">
-          <div className="w-10 h-10 rounded-full bg-brand-light flex-shrink-0" />
+          <div className="aspect-square h-10 rounded-full bg-brand-light flex-shrink-0" />
           <div className="flex flex-col flex-1 min-w-0">
             <p className="text-base text-text-primary leading-[1.2] tracking-[-0.16px] truncate">
               {userName} - {location}
             </p>
-            <div className="flex gap-1 items-center h-4">
+            <div className="flex gap-[5px] items-center h-4">
               {[0,1,2,3,4].map(i => <StarIcon key={i} />)}
             </div>
           </div>
         </div>
-        <button className="w-10 flex items-center justify-center text-text-secondary">
-          <HeartIcon />
+        <button
+          className={`w-10 flex items-center justify-center ${favorited ? 'text-rose-500' : 'text-text-secondary'}`}
+          onClick={e => { e.stopPropagation(); toggleFavoriteAnnonce(id) }}
+        >
+          <HeartIcon filled={favorited} />
         </button>
       </div>
 
       {/* Ad info */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 h-[128px]">
         <p className="text-[22px] font-semibold text-text-primary leading-[1.2] tracking-[-0.44px] truncate">
           {title}
         </p>
-        <p className="text-base text-text-secondary leading-[1.2] tracking-[-0.16px] line-clamp-2">
+        <p className="text-base text-text-secondary leading-[1.2] tracking-[-0.16px] line-clamp-3">
           {description}
         </p>
       </div>
 
-      {/* Image placeholder */}
-      <div className="h-[200px] rounded-xl bg-bg-primary overflow-hidden">
-        <div className="w-full h-full bg-[#d5d7d5] rounded-xl" />
+      {/* Image */}
+      <div className="h-[200px] rounded-[14px] overflow-hidden">
+        <div className="w-full h-full bg-[#d5d7d5] rounded-[5px]" />
       </div>
 
       {/* Date, time, price */}
       <div className="flex items-center gap-3">
         <div className="flex gap-1.5">
-          <div className="bg-white rounded-md px-2.5 py-1.5 h-[34px] flex items-center">
-            <span className="text-text-primary text-[15px]">{date}</span>
+          <div className="bg-white rounded-[6px] px-[11px] py-[6px] h-[34px] flex items-center">
+            <span className="text-text-primary text-[17px] leading-[22px] tracking-[-0.43px]">{date}</span>
           </div>
-          <div className="bg-white rounded-md px-2.5 py-1.5 h-[34px] flex items-center">
-            <span className="text-text-primary text-[15px]">{timeRange}</span>
+          <div className="bg-white rounded-[6px] px-[11px] py-[6px] h-[34px] flex items-center">
+            <span className="text-text-primary text-[17px] leading-[22px] tracking-[-0.43px]">{timeRange}</span>
           </div>
         </div>
         <p className="flex-1 text-[22px] font-semibold text-text-primary leading-[1.2] tracking-[-0.44px] text-right truncate">
@@ -110,26 +102,33 @@ function AnnonceCard({ userName, location, title, description, startDate, startT
 export default function SitterRecherche() {
   const navigate = useNavigate()
   const { annonces } = useAnnonces()
-  const { startConversation } = useConversations()
-  const { profile } = useUserProfile()
-  const myName = fullName(profile)
+  const [filtreOpen, setFiltreOpen] = useState(false)
 
   function handleAnnonceClick(annonce: Annonce) {
-    const convId = startConversation(annonce.id, annonce.title, annonce.userName, myName)
-    navigate(`/sitter/messagerie/${convId}`)
+    navigate(`/sitter/recherche/${annonce.id}`)
   }
 
   return (
-    <div className="flex flex-col h-full bg-bg-primary pt-[62px] pb-[95px] overflow-y-auto">
+    <div className="flex flex-col h-full bg-bg-primary pt-[62px] pb-[127px] overflow-y-auto">
       {/* Header */}
       <div className="flex items-center gap-8 px-4 mb-8">
         <h1 className="flex-1 text-[34px] font-semibold text-text-primary leading-[1.2] tracking-[-1.02px]">
           Annonces
         </h1>
-        <button className={`flex items-center justify-center p-3 rounded-full flex-shrink-0 ${glassStyle}`}>
+        <button
+          onClick={() => setFiltreOpen(true)}
+          className={`flex items-center justify-center p-3 rounded-full flex-shrink-0 ${glassStyle}`}
+        >
           <span className="text-text-primary"><FilterIcon /></span>
         </button>
       </div>
+
+      {filtreOpen && (
+        <FiltreModal
+          onClose={() => setFiltreOpen(false)}
+          onApply={() => setFiltreOpen(false)}
+        />
+      )}
 
       {/* Cards */}
       <div className="flex flex-col gap-8 items-center px-4">
@@ -143,28 +142,7 @@ export default function SitterRecherche() {
         ))}
       </div>
 
-      {/* Special bottom bar */}
-      <div className="absolute bottom-0 left-0 w-full h-[95px] flex flex-col items-center justify-start pt-2">
-        <div className={`flex gap-3 items-center justify-center rounded-full w-[361px]`}>
-          {/* Home pill */}
-          <button
-            onClick={() => navigate('/sitter/home')}
-            className={`flex items-center justify-center w-16 h-16 rounded-full ${glassStyle}`}
-          >
-            <span className="text-text-primary"><HomeIcon /></span>
-          </button>
-
-          {/* Search bar pill */}
-          <div className={`flex flex-1 items-center gap-2 px-4 py-4 rounded-full ${glassStyle}`}>
-            <span className="text-text-primary flex-shrink-0"><SearchIcon /></span>
-            <input
-              type="text"
-              placeholder="Rechercher un profil"
-              className="flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary leading-[1.2] tracking-[-0.16px]"
-            />
-          </div>
-        </div>
-      </div>
+      <BottomTabBar activeTab="annonces" />
     </div>
   )
 }

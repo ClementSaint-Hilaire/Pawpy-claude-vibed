@@ -21,25 +21,16 @@ export default function Verify() {
   const [otp, setOtp] = useState(Array(5).fill(''))
   const email = 'email@domaine.com' // placeholder
 
-  const handleNext = () => {
-    const role = localStorage.getItem('role')
-    if (role === 'walker') {
-      navigate('/onboarding/certification')
-    } else {
-      navigate('/owner/home')
-    }
-  }
-
   return (
     <div className="flex flex-col h-full bg-bg-primary pt-16 pb-8 px-4 gap-6">
       <div className="flex items-center justify-between">
-        <BackButton to="/onboarding/profile" />
-        <PageDots total={5} current={4} />
+        <BackButton to="/onboarding/signup" />
+        <PageDots total={6} current={2} />
       </div>
 
       <div className="flex-1 flex flex-col gap-8">
         <h1 className="text-[34px] font-semibold text-text-primary leading-[1.2] tracking-[-1.02px]">
-          Parlez-nous de vous
+          Vérifions pour éviter les fautes de frappe
         </h1>
 
         <div className="flex flex-col gap-4">
@@ -59,13 +50,13 @@ export default function Verify() {
           {/* Resend */}
           <div className="flex items-center justify-center gap-1.5 text-xs">
             <span className="text-text-secondary">Vous n'avez pas reçu votre code ?</span>
-            <button className="text-brand font-medium">Renvoyer</button>
+            <button className="text-brand font-semibold">Renvoyer</button>
           </div>
         </div>
       </div>
 
-      <Button onClick={handleNext}>
-        Étape suivante
+      <Button onClick={() => navigate('/onboarding/password')}>
+        C'est vérifié !
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path d="M4 10H16M10 4L16 10L10 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>

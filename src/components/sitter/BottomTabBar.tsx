@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
-type ActiveTab = 'profil' | 'home' | 'messages'
+type ActiveTab = 'profil' | 'home' | 'messages' | 'annonces'
 
 interface BottomTabBarProps {
   activeTab: ActiveTab
@@ -8,36 +8,66 @@ interface BottomTabBarProps {
 
 const glassStyle = 'bg-gradient-to-r from-white/80 to-white/80 shadow-[0px_8px_30px_0px_rgba(214,213,212,0.4),0px_0px_4px_0px_rgba(214,213,212,0.3)]'
 
-function UserIcon() {
+function UserIcon({ active }: { active: boolean }) {
+  if (active) return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M16 6C16 8.20914 14.2091 10 12 10C9.79086 10 8 8.20914 8 6C8 3.79086 9.79086 2 12 2C14.2091 2 16 3.79086 16 6Z" fill="#04341A"/>
+      <path d="M19 22C20.1046 22 21.0222 21.0938 20.7787 20.0164C20.4068 18.3705 19.5761 16.8482 18.364 15.636C16.6761 13.9482 14.3869 13 12 13C9.61305 13 7.32387 13.9482 5.63604 15.636C4.42391 16.8482 3.59324 18.3705 3.22129 20.0164C2.97781 21.0938 3.89543 22 5 22H19Z" fill="#04341A"/>
+    </svg>
+  )
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M4 20C4 17.3333 6.66667 15 12 15C17.3333 15 20 17.3333 20 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M12 10C14.2091 10 16 8.20914 16 6C16 3.79086 14.2091 2 12 2C9.79086 2 8 3.79086 8 6C8 8.20914 9.79086 10 12 10Z" stroke="#1D1D1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M4 20C4 17.3333 6.66667 15 12 15C17.3333 15 20 17.3333 20 20" stroke="#1D1D1F" strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   )
 }
 
-function HomeIcon() {
-  return (
-    <svg width="20" height="21" viewBox="0 0 20 21" fill="none">
-      <path d="M2 8.5L10 2.5L18 8.5V18.5C18 19.0523 17.5523 19.5 17 19.5H13V14.5H7V19.5H3C2.44772 19.5 2 19.0523 2 18.5V8.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+function HomeIcon({ active }: { active: boolean }) {
+  if (active) return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M3.03819 9.2466C2.37891 9.81646 2 10.6448 2 11.5163L2 19.5C2 21.1568 3.34315 22.5 5.00001 22.5L19 22.4999C20.6569 22.4999 22 21.1568 22 19.4999V11.5162C22 10.6448 21.6211 9.81646 20.9619 9.24661L13.9622 3.19586C12.8356 2.22199 11.1651 2.22196 10.0385 3.19578L3.03819 9.2466Z" fill="#04341A" stroke="#04341A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
-}
-
-function ChatIcon() {
-  return (
-    <svg width="24" height="21" viewBox="0 0 24 21" fill="none">
-      <path d="M21 2H3C2.44772 2 2 2.44772 2 3V15C2 15.5523 2.44772 16 3 16H8L12 20L16 16H21C21.5523 16 22 15.5523 22 15V3C22 2.44772 21.5523 2 21 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  )
-}
-
-function SearchIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.5"/>
-      <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M3.03819 9.2466C2.37891 9.81646 2 10.6448 2 11.5163L2 19.5C2 21.1568 3.34315 22.5 5.00001 22.5L19 22.4999C20.6569 22.4999 22 21.1568 22 19.4999V11.5162C22 10.6448 21.6211 9.81646 20.9619 9.24661L13.9622 3.19586C12.8356 2.22199 11.1651 2.22196 10.0385 3.19578L3.03819 9.2466Z" stroke="#1D1D1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+function MessageIcon({ active }: { active: boolean }) {
+  if (active) return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <g clipPath="url(#msgfill)">
+        <path d="M12 1.97754C13.3828 1.97754 14.6823 2.13583 15.8977 2.45449C17.1185 2.7732 18.2232 3.23022 19.2117 3.82441C20.2055 4.41855 21.0593 5.12851 21.7723 5.95488C22.4906 6.78129 23.0411 7.70553 23.4246 8.72637C23.8081 9.74175 23.9999 10.8328 24 11.9994C24 13.1608 23.8081 14.2527 23.4246 15.2736C23.0411 16.289 22.4906 17.2106 21.7723 18.0369C21.0593 18.8633 20.2055 19.5733 19.2117 20.1674C18.2232 20.7615 17.1212 21.2174 15.9059 21.5361C14.6905 21.8602 13.3883 22.0225 12 22.0225C10.8928 22.0224 9.82863 21.9207 8.80781 21.7154C7.7923 21.5102 6.84415 21.207 5.96367 20.8072C5.43431 21.1799 4.82904 21.4748 4.14844 21.6908C3.46819 21.9121 2.80412 22.0224 2.15625 22.0225C1.83755 22.0225 1.58802 21.9279 1.40977 21.7389C1.2372 21.5553 1.15639 21.3335 1.16719 21.0744C1.17812 20.8207 1.30798 20.5917 1.55625 20.3865C1.79924 20.1705 1.97438 19.9433 2.08242 19.7057C2.19046 19.4734 2.24531 19.2054 2.24531 18.9029C2.24525 18.6762 2.19319 18.4247 2.09063 18.1494C1.98799 17.8687 1.80992 17.5394 1.55625 17.1615C1.22134 16.6754 0.937744 16.1563 0.705469 15.6053C0.478666 15.049 0.302347 14.4687 0.178125 13.8639C0.0592864 13.2589 0 12.6368 0 11.9994C5.44099e-05 10.8328 0.191926 9.74175 0.575391 8.72637C0.964317 7.70544 1.51587 6.78135 2.22891 5.95488C2.94187 5.12859 3.79289 4.41851 4.78125 3.82441C5.77512 3.23028 6.88 2.77317 8.09531 2.45449C9.31045 2.13591 10.6121 1.97757 12 1.97754Z" fill="#04341A"/>
+      </g>
+      <defs>
+        <clipPath id="msgfill"><rect width="24" height="24" rx="4" fill="white"/></clipPath>
+      </defs>
+    </svg>
+  )
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <g clipPath="url(#msgoutline)">
+        <path d="M12 22.023C10.8926 22.023 9.82849 21.9204 8.80756 21.7151C7.79203 21.5099 6.84402 21.2074 5.96354 20.8076C5.43417 21.1804 4.82917 21.4747 4.14855 21.6908C3.46793 21.9123 2.80351 22.023 2.1553 22.023C1.8366 22.023 1.58812 21.9285 1.40986 21.7394C1.237 21.5558 1.15598 21.3343 1.16678 21.075C1.17758 20.8211 1.30722 20.5916 1.55571 20.3863C1.79878 20.1702 1.97434 19.9434 2.08238 19.7057C2.19041 19.4734 2.24443 19.206 2.24443 18.9035C2.24443 18.6766 2.19311 18.4255 2.09048 18.15C1.98785 17.8691 1.80959 17.5396 1.55571 17.1614C1.2208 16.6753 0.937205 16.1567 0.704929 15.6057C0.478055 15.0494 0.302498 14.4687 0.178258 13.8637C0.0594193 13.2587 0 12.6375 0 12.0001C0 10.8333 0.191762 9.74214 0.575287 8.72661C0.964213 7.70567 1.51519 6.78197 2.22822 5.9555C2.94126 5.12904 3.79203 4.41871 4.78055 3.82451C5.77448 3.23032 6.87914 2.77387 8.09453 2.45517C9.30993 2.13646 10.6117 1.97711 12 1.97711C13.3828 1.97711 14.682 2.13646 15.8974 2.45517C17.1182 2.77387 18.2228 3.23032 19.2113 3.82451C20.2053 4.41871 21.0587 5.12904 21.7718 5.9555C22.4902 6.78197 23.0412 7.70567 23.4247 8.72661C23.8082 9.74214 24 10.8333 24 12.0001C24 13.1614 23.8082 14.2526 23.4247 15.2735C23.0412 16.2891 22.4902 17.2101 21.7718 18.0365C21.0587 18.863 20.2053 19.5733 19.2113 20.1675C18.2228 20.7617 17.1209 21.2182 15.9055 21.5369C14.6901 21.861 13.3883 22.023 12 22.023ZM12 20.5889C13.5449 20.5889 14.9629 20.3755 16.2539 19.9488C17.5449 19.522 18.6604 18.9224 19.6003 18.15C20.5456 17.3775 21.2748 16.47 21.788 15.4275C22.3065 14.3795 22.5658 13.2371 22.5658 12.0001C22.5658 10.7577 22.3065 9.61519 21.788 8.57266C21.2748 7.52471 20.5456 6.61452 19.6003 5.84207C18.6604 5.06962 17.5449 4.47272 16.2539 4.05139C14.9629 3.62465 13.5449 3.41128 12 3.41128C10.4497 3.41128 9.02903 3.62465 7.73801 4.05139C6.4524 4.47272 5.33693 5.06962 4.39163 5.84207C3.45172 6.61452 2.72248 7.52471 2.20392 8.57266C1.69075 9.61519 1.43417 10.7577 1.43417 12.0001C1.43417 12.8103 1.5476 13.5855 1.77448 14.3255C2.00135 15.0602 2.32816 15.7354 2.7549 16.3512C3.079 16.8427 3.31398 17.2992 3.45982 17.7205C3.60567 18.1365 3.6786 18.5308 3.6786 18.9035C3.6786 19.2222 3.62998 19.4977 3.53275 19.73C3.43552 19.9677 3.31398 20.1891 3.16813 20.3944C3.49223 20.3458 3.81904 20.254 4.14855 20.1189C4.47806 19.9839 4.77785 19.8272 5.04794 19.649C5.32343 19.4815 5.57731 19.3816 5.80959 19.3492C6.04727 19.3221 6.30925 19.3735 6.59554 19.5031C7.36799 19.8542 8.20527 20.1216 9.10736 20.3053C10.0149 20.4943 10.9791 20.5889 12 20.5889Z" fill="#1D1D1F"/>
+      </g>
+      <defs>
+        <clipPath id="msgoutline"><rect width="24" height="24" rx="4" fill="white"/></clipPath>
+      </defs>
+    </svg>
+  )
+}
+
+function WebPageIcon({ active }: { active: boolean }) {
+  if (active) return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M17.5908 1.5C19.2477 1.5 20.5908 2.84315 20.5908 4.5V19.5C20.5906 21.1567 19.2476 22.5 17.5908 22.5H6.40918L6.25488 22.4961C4.721 22.4183 3.49098 21.1881 3.41309 19.6543L3.40918 19.5V4.5C3.40918 2.84318 4.75237 1.50005 6.40918 1.5H17.5908ZM7.89355 11.0332C7.34127 11.0332 6.89355 11.4809 6.89355 12.0332V18.458C6.89355 19.0102 7.34143 19.4588 7.89355 19.459H16.1064C16.6587 19.459 17.1064 19.0113 17.1064 18.459V12.0332C17.1064 11.4809 16.6587 11.0332 16.1064 11.0332H7.89355ZM7.91504 7.47461C7.50096 7.47465 7.1652 7.81056 7.16504 8.22461C7.16504 8.6388 7.50086 8.97456 7.91504 8.97461H14.042C14.4562 8.97458 14.792 8.6388 14.792 8.22461C14.7918 7.81055 14.4561 7.47464 14.042 7.47461H7.91504ZM7.91504 4.66699C7.50086 4.66704 7.16504 5.00281 7.16504 5.41699C7.1653 5.83095 7.50103 6.16695 7.91504 6.16699L16.085 6.16602C16.4991 6.16596 16.835 5.8302 16.835 5.41602C16.8347 5.00206 16.499 4.66607 16.085 4.66602L7.91504 4.66699Z" fill="#04341A"/>
+    </svg>
+  )
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M17.4043 1.00391C18.9894 1.08421 20.25 2.39489 20.25 4V20C20.25 21.6051 18.9894 22.9158 17.4043 22.9961L17.25 23H6.75C5.14489 23 3.83421 21.7394 3.75391 20.1543L3.75 20V4C3.75 2.34315 5.09315 1 6.75 1H17.25L17.4043 1.00391ZM6.75 2.5C5.92157 2.5 5.25 3.17157 5.25 4V20C5.25 20.8284 5.92157 21.5 6.75 21.5H17.25C18.0784 21.5 18.75 20.8284 18.75 20V4C18.75 3.17157 18.0784 2.5 17.25 2.5H6.75ZM15.583 11.083C16.1352 11.083 16.5828 11.5309 16.583 12.083V18.333C16.583 18.8853 16.1353 19.333 15.583 19.333H8.41699C7.86471 19.333 7.41699 18.8853 7.41699 18.333V12.083C7.41717 11.5309 7.86482 11.083 8.41699 11.083H15.583ZM13.833 7.58301C14.2471 7.58301 14.5828 7.91894 14.583 8.33301C14.583 8.74722 14.2472 9.08301 13.833 9.08301H8.33301C7.91894 9.08283 7.58301 8.74711 7.58301 8.33301C7.58318 7.91905 7.91905 7.58318 8.33301 7.58301H13.833ZM15.666 4.83301C16.0801 4.83301 16.4158 5.16894 16.416 5.58301C16.416 5.99722 16.0802 6.33301 15.666 6.33301H8.33301C7.91894 6.33283 7.58301 5.99711 7.58301 5.58301C7.58318 5.16905 7.91905 4.83318 8.33301 4.83301H15.666Z" fill="#1D1D1F"/>
     </svg>
   )
 }
@@ -45,51 +75,44 @@ function SearchIcon() {
 export default function BottomTabBar({ activeTab }: BottomTabBarProps) {
   const navigate = useNavigate()
 
-  const tabs: { key: ActiveTab; label: string; icon: React.ReactNode; route: string }[] = [
-    { key: 'profil', label: 'Mon Profil', icon: <UserIcon />, route: '/sitter/profil' },
-    { key: 'home', label: 'Accueil', icon: <HomeIcon />, route: '/sitter/home' },
-    { key: 'messages', label: 'Messages', icon: <ChatIcon />, route: '/sitter/messagerie' },
+  const tabs: { key: ActiveTab; label: string; route: string }[] = [
+    { key: 'profil',   label: 'Mon Profil', route: '/sitter/profil' },
+    { key: 'home',     label: 'Accueil',    route: '/sitter/home' },
+    { key: 'messages', label: 'Messages',   route: '/sitter/messagerie' },
+    { key: 'annonces', label: 'Annonces',   route: '/sitter/recherche' },
   ]
+
+  const icons: Record<ActiveTab, (active: boolean) => React.ReactNode> = {
+    profil:   (a) => <UserIcon active={a} />,
+    home:     (a) => <HomeIcon active={a} />,
+    messages: (a) => <MessageIcon active={a} />,
+    annonces: (a) => <WebPageIcon active={a} />,
+  }
 
   return (
     <div className="absolute bottom-0 left-0 w-full h-[95px] flex flex-col items-center justify-start pt-2">
-      <div className={`flex gap-3 items-center justify-center rounded-full w-[361px]`}>
-        {/* Main 3-tab pill */}
-        <div className={`flex flex-1 items-center justify-center px-1 py-1 rounded-full ${glassStyle}`}>
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.key
-            return (
-              <button
-                key={tab.key}
-                onClick={() => navigate(tab.route)}
-                className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 px-7 rounded-full transition-colors ${
-                  isActive ? 'bg-stroke' : ''
+      <div className={`flex items-center justify-center pl-1 pr-2 py-1 rounded-full w-[361px] ${glassStyle}`}>
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.key
+          return (
+            <button
+              key={tab.key}
+              onClick={() => navigate(tab.route)}
+              className={`flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-2 rounded-full transition-colors ${
+                isActive ? 'bg-stroke' : ''
+              }`}
+            >
+              {icons[tab.key](isActive)}
+              <span
+                className={`text-[11px] leading-[1.1] whitespace-nowrap ${
+                  isActive ? 'font-bold text-brand' : 'font-normal text-text-primary'
                 }`}
               >
-                <span className={isActive ? 'text-brand' : 'text-text-primary'}>
-                  {tab.icon}
-                </span>
-                <span
-                  className={`text-[11px] leading-[1.1] whitespace-nowrap ${
-                    isActive ? 'font-bold text-brand' : 'font-normal text-text-primary'
-                  }`}
-                >
-                  {tab.label}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Search pill */}
-        <button
-          onClick={() => navigate('/sitter/recherche')}
-          className={`flex items-center justify-center w-16 h-full py-4 rounded-full ${glassStyle}`}
-        >
-          <span className="text-text-primary">
-            <SearchIcon />
-          </span>
-        </button>
+                {tab.label}
+              </span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -11,4 +16,10 @@ body {
   background-color: #e5e7eb;
   font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+@keyframes badge-glare {
+  0%   { transform: translateX(-120%) skewX(-20deg); }
+  38%  { transform: translateX(240%)  skewX(-20deg); }
+  100% { transform: translateX(240%)  skewX(-20deg); }
 }
